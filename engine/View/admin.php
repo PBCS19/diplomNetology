@@ -18,7 +18,7 @@
           <td><?php echo $admin['login'] ?></td>
           <td><?php echo $admin['password'] ?></td>
           <td>
-            <form method="POST" action="changePassword">
+            <form method="POST" action="admin/changePassword">
             <input type="text" name="editPas" value="<?php echo $admin['password']?>" />
             <button type="submit" name="goEditPas" value="<?php echo $admin['id']?>">Изменить</button>
             </form>

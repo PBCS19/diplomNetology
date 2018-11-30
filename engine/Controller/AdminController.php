@@ -3,6 +3,8 @@
 namespace Engine\Controller;
 
 use Engine\Model\AdminModel;
+use Engine\Model\QuestionsModel;
+use Engine\Model\UserModel;
 use Engine\Core\Response\Response;
 
 class AdminController 
@@ -25,9 +27,11 @@ class AdminController
             if(isset($_POST['deladmin'])) {
                 $action->actionDelAdmin(['id'=>$_POST['deladmin']]);
             }
-            $categories = $action->getCategories();
-            $questions = $action->getQuestionCategories('all');
-            $questionsNoAnswer = $action->getQuestionCategories('onlyNoAnswer');
+            
+            $questionModel = new QuestionsModel();
+            $categories = $questionModel->getCategories();
+            $questions = $questionModel->getQuestionCategories('all');
+            $questionsNoAnswer = $questionModel->getQuestionCategories('onlyNoAnswer');
             require_once __DIR__ . '/../View/admin.php';
         }    
     }
@@ -35,7 +39,7 @@ class AdminController
     public function edit()
     {   
         if (isset($_POST['goEdit'])) {
-            $action = new AdminModel();
+            $action = new QuestionsModel();
             $questions = $action->getQuestionCategories([$_POST['goEdit']]);
             $categories = $action->getCategories();
             require_once __DIR__ . '/../View/edit.php';
@@ -162,7 +166,7 @@ class AdminController
      */
     public function statusQuestion()
     {
-        $action = new AdminModel();
+        $action = new QuestionsModel();
         if(isset($_POST['questionHide'])) {
             $action->actionStatusQuestion([1,$_POST['questionHide']]);
         }
@@ -177,7 +181,7 @@ class AdminController
      */
     public function delCategory()
     {
-        $action = new AdminModel();
+        $action = new QuestionsModel();
         $action->actionDelCategory([$_POST['delCategory']]);
         Response::redirect('/admin');
     }
@@ -187,7 +191,7 @@ class AdminController
      */
     public function addCategory()
     {
-        $action = new AdminModel();
+        $action = new QuestionsModel();
         if (!empty($_POST['addCategory'])) {
             $action->actionAddCategory([$_POST['addCategory']]);
         }
@@ -199,7 +203,7 @@ class AdminController
      */
     public function delQuestion()
     {
-        $action = new AdminModel();
+        $action = new QuestionsModel();
         $action->actionDelQuestion([$_POST['delQuestion']]);
         Response::redirect('/admin');
     }
@@ -209,10 +213,11 @@ class AdminController
      */
     private function updateQuestion()
     {
-        $action = new AdminModel();
+        $action = new QuestionsModel();
         if (!empty($_POST['changeName'])) {
-            $userId = $action->checkUser([$_POST['updateQuestion']]);
-            $action->actionChangeName([$_POST['changeName'],$userId['user_id']]);
+            $user = new UserModel();
+            $userId = $user->checkUser([$_POST['updateQuestion']]);
+            $user->actionChangeName([$_POST['changeName'],$userId['user_id']]);
         }
         if (!empty($_POST['changeQuestion'])) {
             $action->actionChangeQuestion([$_POST['changeQuestion'],$_POST['updateQuestion']]);

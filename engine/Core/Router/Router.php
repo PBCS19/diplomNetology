@@ -11,13 +11,11 @@ class Router {
         
         $routes = explode('/', $_SERVER['REQUEST_URI']);
         
-        if (!empty($routes[1]))
-        {
+        if (!empty($routes[1])) {
             $controller = $routes[1];
         }
         
-        if (!empty($routes[2]))
-        {
+        if (!empty($routes[2])) {
             $action = $routes[2];
         }
         
@@ -25,8 +23,7 @@ class Router {
         $actionName = $action;
         
         $controllerPath = '../engine/Controller/' . $controllerName . '.php';
-        if (file_exists($controllerPath))
-        {
+        if (file_exists($controllerPath)) {
             session_start();
             $controller = $this->getController($controllerName);
             $controller->$action();

@@ -16,23 +16,16 @@ class Model
     
     public function getQuestionCategories($status)
     {
-        if ($status === 'all')
-        {
+        if ($status === 'all') {
             $param = 'ORDER BY q.date DESC';
             $status = [];
-        } 
-        elseif ($status === 'status') 
-        {
+        } elseif ($status === 'status') {
             $param = 'WHERE q.answer_id IS NOT NULL AND q.status = 0';
             $status = [];
-        }
-        elseif ($status === 'onlyNoAnswer')
-        {
+        } elseif ($status === 'onlyNoAnswer') {
            $param = 'WHERE q.answer_id IS NULL ORDER BY q.date DESC';
            $status = [];
-        } 
-        else
-        {
+        } else {
             $param = 'WHERE q.id = ?';
         }
         $sth = Connection::get()->connect()->prepare(

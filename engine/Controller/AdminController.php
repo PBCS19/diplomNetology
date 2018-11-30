@@ -17,8 +17,7 @@ class AdminController
 
     public function index()
     {
-        if (!isset($_SESSION['admin_id']))
-        {
+        if (!isset($_SESSION['admin_id'])) {
             Response::redirect('/admin/auth');
         } else {
             $action = new AdminModel();
@@ -35,22 +34,15 @@ class AdminController
     
     public function edit()
     {   
-        if (isset($_POST['goEdit']))
-        {
+        if (isset($_POST['goEdit'])) {
             $action = new AdminModel();
             $questions = $action->getQuestionCategories([$_POST['goEdit']]);
             $categories = $action->getCategories();
             require_once __DIR__ . '/../View/edit.php';
-        }
-        
-        elseif(isset($_POST['updateQuestion']))
-        {
+        } elseif(isset($_POST['updateQuestion'])) {
             $this->updateQuestion();
             Response::redirect('/admin');
-        }
-        
-        else
-        {
+        } else {
             Response::redirect('/admin');
         }
     }
@@ -161,8 +153,7 @@ class AdminController
     public function addCategory()
     {
         $action = new AdminModel();
-        if (!empty($_POST['addCategory']))
-        {
+        if (!empty($_POST['addCategory'])) {
             $action->actionAddCategory([$_POST['addCategory']]);
         }
         Response::redirect('/admin');
@@ -178,17 +169,14 @@ class AdminController
     private function updateQuestion()
     {
         $action = new AdminModel();
-        if (!empty($_POST['changeName']))
-        {
+        if (!empty($_POST['changeName'])) {
             $userId = $action->checkUser([$_POST['updateQuestion']]);
             $action->actionChangeName([$_POST['changeName'],$userId['user_id']]);
         }
-        if (!empty($_POST['changeQuestion']))
-        {
+        if (!empty($_POST['changeQuestion'])) {
             $action->actionChangeQuestion([$_POST['changeQuestion'],$_POST['updateQuestion']]);
         }
-        if (!empty($_POST['changeAnswer']))
-        {
+        if (!empty($_POST['changeAnswer'])) {
             $answerId = $action->checkAnswer([$_POST['updateQuestion']]);
             if ($answerId['answer_id'] == null)
             {
@@ -199,8 +187,7 @@ class AdminController
             }
             $action->actionStatusQuestion([$_POST['status'],$_POST['updateQuestion']]);
         }
-        if (!empty($_POST['updateCategory']))
-        {
+        if (!empty($_POST['updateCategory'])) {
             $action->actionUpdateCategory([$_POST['updateCategory'],$_POST['updateQuestion']]);
         }
     }

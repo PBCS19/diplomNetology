@@ -1,0 +1,15 @@
+{
+    "name": "victor/diplom-php",
+    "authors": [
+        {
+            "name": "Victor Kostarev",
+            "email": "kostarev.victor15@yandex.ru"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Engine\\": "engine"
+        }
+    }
+}

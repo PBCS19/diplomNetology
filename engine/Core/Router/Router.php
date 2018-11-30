@@ -26,9 +26,15 @@ class Router {
         if (file_exists($controllerPath)) {
             session_start();
             $controller = $this->getController($controllerName);
-            $controller->$action();
+            if (method_exists($controller, $action)) {
+                $controller->$action();
+            } else {
+                //404
+                echo '404';
+            }
         } else {
             //404
+            echo '404';
         }
     }
     

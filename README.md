@@ -1,7 +1,7 @@
 <a href="https://drive.google.com/file/d/1I8rf3_aQ2VtCQeAGVQ2m-5fx0kP1Aj6b/view?usp=sharing">Документация</a><br>
 <a href="https://pbcs-shop.com/">Рабочая версия</a><br>
 
-<h1>Установка</h1>
+# Установка
 1. Скачать
 2. Установить в директорию сайта
 3. Через терминал войти в дерикторию сайта и ввести команду пример для (ubuntu):

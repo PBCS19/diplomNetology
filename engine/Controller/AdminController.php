@@ -178,8 +178,7 @@ class AdminController
         }
         if (!empty($_POST['changeAnswer'])) {
             $answerId = $action->checkAnswer([$_POST['updateQuestion']]);
-            if ($answerId['answer_id'] == null)
-            {
+            if ($answerId['answer_id'] == null) {
                 $answerId = $action->addAnswer(['answer'=>$_POST['changeAnswer'],'admin_id'=>$_SESSION['admin_id']]);
                 $action->updateAnswerId([$answerId,$_POST['updateQuestion']]);
             } else {

@@ -7,7 +7,10 @@ use Engine\Core\ParentModel\Model;
 
 class MainModel extends Model
 {
-    
+    /**
+     * Добавляет новый вопрос
+     * @param array $param
+     */
     public function addQuestion($param)
     {
         $sth = Connection::get()->connect()->prepare(
@@ -15,6 +18,10 @@ class MainModel extends Model
         $sth->execute($param);
     }
     
+    /**
+     * Добавляет нового узера
+     * @param array $param
+     */
     public function addUser($param)
     {
         $sth = Connection::get()->connect()->prepare(
@@ -22,6 +29,11 @@ class MainModel extends Model
         $sth->execute($param);
     }
     
+    /**
+     * Проверяет существование юзера, возвращает его id
+     * @param array $param
+     * @return array
+     */
     public function getIdUser($param)
     {
         $sth = Connection::get()->connect()->prepare(
@@ -30,6 +42,11 @@ class MainModel extends Model
         return $sth->fetch();
     }
     
+    /**
+     * Проверяет ошибки при создании нового вопроса юзером
+     * @param array $param
+     * @return string
+     */
     public function checkErrorsQuestions($param)
     {
         $errors = [];

@@ -100,12 +100,19 @@ class AdminController
         }
     }
     
+    /**
+     * Возвращает id,логин,пароль администратора.
+     * @return array
+     */
     private function listAdmin()
     {
         $get = new AdminModel();
         return $get->getListAdmin();
     }
     
+    /**
+     * Проверяет данные на ошибки и добавляет администратора
+     */
     public function addAdmin()
     {
         if (isset($_POST['submit'])) {
@@ -121,6 +128,9 @@ class AdminController
         require_once __DIR__ . '/../View/addAdmin.php';
     }
     
+    /**
+     * Изменяет пароль администратора
+     */
     public function changePassword()
     {
         $action = new AdminModel();
@@ -128,6 +138,9 @@ class AdminController
         Response::redirect('/admin');
     }
     
+    /**
+     * Удаляет администратора
+     */
     public function delAdmin()
     {
         $action = new AdminModel();
@@ -135,12 +148,18 @@ class AdminController
         Response::redirect('/admin');
     }
     
+    /**
+     * Добавляет ответ
+     */
     public function addAnswer()
     {
         $action = new AdminModel();
         $action->actionAddAnswer();
     }
     
+    /**
+     * Меняет статус вопроса (открыт/скрыт)
+     */
     public function statusQuestion()
     {
         $action = new AdminModel();
@@ -153,6 +172,9 @@ class AdminController
         Response::redirect('/admin');
     }
     
+    /**
+     * Удаляет категорию и все вопросы в ней
+     */
     public function delCategory()
     {
         $action = new AdminModel();
@@ -160,6 +182,9 @@ class AdminController
         Response::redirect('/admin');
     }
     
+    /**
+     * Добавляет категорию
+     */
     public function addCategory()
     {
         $action = new AdminModel();
@@ -169,6 +194,9 @@ class AdminController
         Response::redirect('/admin');
     }
     
+    /**
+     * Удаляет вопрос
+     */
     public function delQuestion()
     {
         $action = new AdminModel();
@@ -176,6 +204,9 @@ class AdminController
         Response::redirect('/admin');
     }
     
+    /**
+     * Обновляет вопрос.
+     */
     private function updateQuestion()
     {
         $action = new AdminModel();

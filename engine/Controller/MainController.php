@@ -16,6 +16,9 @@ class MainController extends Controller
         require_once __DIR__ . '/../View/index.php';
     }
     
+    /**
+     * Добавление нового вопроса
+     */
     public function add()
     {
         $sth = new MainModel();

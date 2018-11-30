@@ -6,6 +6,10 @@ use Engine\Core\Database\Connection;
 
 class Model 
 {
+    /**
+     * Получает список категорий
+     * @return array
+     */
     public function getCategories()
     {
         $sth = Connection::get()->connect()->prepare(
@@ -14,6 +18,11 @@ class Model
         return $sth->fetchAll(\PDO::FETCH_ASSOC);
     }
     
+    /**
+     * Соединение таблиц для вывода данных.
+     * @param string $status
+     * @return array
+     */
     public function getQuestionCategories($status)
     {
         if ($status === 'all') {

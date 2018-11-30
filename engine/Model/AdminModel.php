@@ -104,14 +104,16 @@ class AdminModel
      * @param array $param
      * @return array
      */
-    private function checkAdmin($param) {
+    private function checkAdmin($param) 
+    {
         $sth = Connection::get()->connect()->prepare(
                 "SELECT id FROM admins WHERE login= ?");
         $sth->execute($param);
         return $sth->fetch();
     }
     
-    public function checkGoogleCaptcha($gRecaptchaResponse, $ip) {
+    public function checkGoogleCaptcha($gRecaptchaResponse, $ip) 
+    {
         $urlToGoogleApi = "https://www.google.com/recaptcha/api/siteverify";
         $secretKey = '6LfASncUAAAAAG9zh38syXzQcqO353hMGUq2ZboX';
         $query = $urlToGoogleApi . '?secret=' . $secretKey . '&response=' . $gRecaptchaResponse . '&remoteip=' . $ip;

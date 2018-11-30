@@ -47,6 +47,12 @@ class AdminController
         }
     }
 
+    /**
+     * Проверка логина и пароля, запись id администратора в сессию
+     * @param string $login
+     * @param string $password
+     * @return array
+     */
     private function loginPass($login, $password) 
     {
         $errors = [];
@@ -66,6 +72,10 @@ class AdminController
         }
     }
     
+    /**
+     * Проверка количества не верно введенных логинов и пароле, либо авторизация
+     * @param array $errors
+     */
     private function checkErrorsAuth($errors) 
     {
         if (!empty($errors)) {

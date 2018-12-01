@@ -50,6 +50,13 @@ class AdminController
             Response::redirect('/admin');
         }
     }
+    
+    public function logout()
+    {
+        session_destroy();
+        Response::redirect('/');
+        exit();
+    }
 
     /**
      * Проверка логина и пароля, запись id администратора в сессию

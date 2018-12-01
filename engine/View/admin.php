@@ -140,6 +140,7 @@
         <?php endforeach; ?>
       </table>
     </details>
+    <a href="/admin/logout">Выход</a>
   </body>
 </html>
 

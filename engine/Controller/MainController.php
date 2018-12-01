@@ -8,7 +8,9 @@ use Engine\Model\UserModel;
 
 class MainController extends Controller 
 {
-    
+    /**
+     * Главная
+     */
     public function index()
     {
         $sth = new QuestionsModel();

@@ -7,8 +7,11 @@ use Engine\Model\QuestionsModel;
 use Engine\Model\UserModel;
 use Engine\Core\Response\Response;
 
-class AdminController 
+class AdminController
 {
+    /**
+     * Авторизция
+     */
     public function auth() 
     {
         $log = isset($_POST['login']) ? $_POST['login'] : '';
@@ -17,6 +20,9 @@ class AdminController
         $this->checkErrorsAuth($errors);
     }
 
+    /**
+     * Главная
+     */
     public function index()
     {
         if (!isset($_SESSION['admin_id'])) {
@@ -36,6 +42,9 @@ class AdminController
         }    
     }
     
+    /**
+     * Редактирование вопроса
+     */
     public function edit()
     {   
         if (isset($_POST['goEdit'])) {
@@ -51,6 +60,9 @@ class AdminController
         }
     }
     
+    /**
+     * Выход
+     */
     public function logout()
     {
         session_destroy();

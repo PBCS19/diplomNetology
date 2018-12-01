@@ -13,7 +13,8 @@ class AdminModel extends Model
      */
     public function checkLoginPass($param) 
     {
-        return $this->prepare("SELECT id FROM admins WHERE login= ? AND password= ?",$param);
+        $rez = $this->prepare("SELECT id FROM admins WHERE login= ? AND password= ?",$param);
+        return array_shift($rez);
     }
     
     /**

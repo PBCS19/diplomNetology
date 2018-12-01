@@ -3,8 +3,9 @@
 namespace Engine\Model;
 
 use Engine\Core\Database\Connection;
+use Engine\Core\ParentModel\Model;
 
-class QuestionsModel
+class QuestionsModel extends Model
 {
     /**
      * Получает список категорий
@@ -12,10 +13,7 @@ class QuestionsModel
      */
     public function getCategories()
     {
-        $sth = Connection::get()->connect()->prepare(
-               "SELECT `id`,`category` FROM `categories`");
-        $sth->execute();
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->prepare("SELECT `id`,`category` FROM `categories`",[]);
     }
     
     /**
@@ -37,15 +35,13 @@ class QuestionsModel
         } else {
             $param = 'WHERE q.id = ?';
         }
-        $sth = Connection::get()->connect()->prepare(
-            "SELECT q.id,question,status,category_id,category,answer_id,q.date,name,email,answer,user_id "
+        
+        return $this->prepare("SELECT q.id,question,status,category_id,category,answer_id,q.date,name,email,answer,user_id "
                     . "FROM questions q "
                     . "INNER JOIN categories c ON c.id=q.category_id "
                     . "LEFT JOIN users u ON u.id=q.user_id "
                     . "LEFT JOIN answers a ON a.id=q.answer_id "
-                    . $param);
-        $sth->execute($status);
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
+                    . $param,$status);
     }
     
     /**
@@ -54,9 +50,7 @@ class QuestionsModel
      */
     public function addQuestion($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-               "INSERT INTO questions (question, category_id, user_id) VALUES (:question, :category_id, :user_id)");
-        $sth->execute($param);
+        $this->prepare("INSERT INTO questions (question, category_id, user_id) VALUES (:question, :category_id, :user_id)",$param);
     }
     
     /**
@@ -65,9 +59,7 @@ class QuestionsModel
      */
     public function actionStatusQuestion($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-                "UPDATE questions SET status = ? WHERE id = ?");
-        $sth->execute($param);
+        $this->prepare("UPDATE questions SET status = ? WHERE id = ?",$param);
     }
     
     /**
@@ -76,13 +68,8 @@ class QuestionsModel
      */
     public function actionDelCategory($param)
     {
-        $connect = Connection::get()->connect();
-        $sth = $connect->prepare(
-                "DELETE FROM questions WHERE category_id=?");
-        $sth->execute($param);
-        $sth1 = $connect->prepare(
-                "DELETE FROM categories WHERE id=? LIMIT 1");
-        $sth1->execute($param);
+        $this->prepare("DELETE FROM questions WHERE category_id=?",$param);
+        $this->prepare("DELETE FROM categories WHERE id=? LIMIT 1",$param);
     }
     
     /**
@@ -91,9 +78,7 @@ class QuestionsModel
      */
     public function actionAddCategory($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-                "INSERT INTO categories (category) VALUES ( ? )");
-        $sth->execute($param);
+        $this->prepare("INSERT INTO categories (category) VALUES ( ? )",$param);
     }
     
     /**
@@ -102,9 +87,7 @@ class QuestionsModel
      */
     public function actionDelQuestion($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-                "DELETE FROM questions WHERE id=?");
-        $sth->execute($param);
+        $this->prepare("DELETE FROM questions WHERE id=?",$param);
     }
     
     /**
@@ -113,9 +96,7 @@ class QuestionsModel
      */
     public function actionChangeQuestion($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-                "UPDATE questions SET question = ? WHERE id = ?");
-        $sth->execute($param);
+        $this->prepare("UPDATE questions SET question = ? WHERE id = ?",$param);
     }
     
     /**
@@ -125,10 +106,8 @@ class QuestionsModel
      */
     public function checkAnswer($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-                "SELECT answer_id FROM questions WHERE id= ?");
-        $sth->execute($param);
-        return $sth->fetch();
+        $rez = $this->prepare("SELECT answer_id FROM questions WHERE id= ?",$param);
+        return array_shift($rez);
     }
 
     /**
@@ -137,24 +116,17 @@ class QuestionsModel
      */
     public function actionChangeAnswer($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-                "UPDATE answers SET answer = :answer, admin_id = :admin_id WHERE id = :id");
-        $sth->execute($param);
+        $this->prepare("UPDATE answers SET answer = :answer, admin_id = :admin_id WHERE id = :id",$param);
     }
     
     /**
      * Добавление нового ответа, возвращает id созданного ответа
      * @param array $param
-     * @return array
+     * @return string
      */
     public function addAnswer($param)
     {
-        $connect = Connection::get()->connect();
-        $sth = $connect->prepare(
-                "INSERT INTO answers (answer, admin_id) VALUES (:answer, :admin_id)");
-        $sth->execute($param);
-        $id = $connect->lastInsertId();
-        return $id;
+        return $this->prepare("INSERT INTO answers (answer, admin_id) VALUES (:answer, :admin_id)",$param);
     }
     
     /**
@@ -163,9 +135,7 @@ class QuestionsModel
      */
     public function updateAnswerId($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-                "UPDATE questions SET answer_id = ? WHERE id = ?");
-        $sth->execute($param);
+        $this->prepare("UPDATE questions SET answer_id = ? WHERE id = ?",$param);
     }
 
     /**
@@ -174,9 +144,7 @@ class QuestionsModel
      */
     public function actionUpdateCategory($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-                "UPDATE questions SET category_id = ? WHERE id = ?");
-        $sth->execute($param);
+        $this->prepare("UPDATE questions SET category_id = ? WHERE id = ?",$param);
     }
     
     /**

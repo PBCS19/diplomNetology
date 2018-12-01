@@ -2,9 +2,9 @@
 
 namespace Engine\Model;
 
-use Engine\Core\Database\Connection;
+use Engine\Core\ParentModel\Model;
 
-class AdminModel
+class AdminModel extends Model
 {
     /**
      * Проверяет логин и пароль на существование
@@ -13,10 +13,7 @@ class AdminModel
      */
     public function checkLoginPass($param) 
     {
-        $sth = Connection::get()->connect()->prepare(
-                "SELECT id FROM admins WHERE login= ? AND password= ?");
-        $sth->execute($param);
-        return $sth->fetch();
+        return $this->prepare("SELECT id FROM admins WHERE login= ? AND password= ?",$param);
     }
     
     /**
@@ -37,10 +34,7 @@ class AdminModel
      */
     public function getListAdmin() 
     {
-        $sth = Connection::get()->connect()->prepare(
-                "SELECT id, login, password FROM admins");
-        $sth->execute();
-        return $sth->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->prepare("SELECT id, login, password FROM admins",[]);
     }
 
     /**
@@ -49,9 +43,7 @@ class AdminModel
      */
     public function actionAddAdmin($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-                "INSERT INTO admins (login, password) VALUES (:login, :password)");
-        $sth->execute($param);
+        $this->prepare("INSERT INTO admins (login, password) VALUES (:login, :password)",$param);
     }
     
     /**
@@ -60,9 +52,7 @@ class AdminModel
      */
     public function actionChangePassword($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-                "UPDATE admins SET password=:pas WHERE id=:id");
-        $sth->execute($param);
+        $this->prepare("UPDATE admins SET password=:pas WHERE id=:id",$param);
     }
     
     /**
@@ -71,9 +61,7 @@ class AdminModel
      */
     public function actionDelAdmin($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-                "DELETE FROM admins WHERE id=:id LIMIT 1");
-        $sth->execute($param);
+        $this->prepare("DELETE FROM admins WHERE id=:id LIMIT 1",$param);
     }
     
     /**
@@ -106,10 +94,8 @@ class AdminModel
      */
     private function checkAdmin($param) 
     {
-        $sth = Connection::get()->connect()->prepare(
-                "SELECT id FROM admins WHERE login= ?");
-        $sth->execute($param);
-        return $sth->fetch();
+        $rez = $this->prepare("SELECT id FROM admins WHERE login= ?",$param);
+        return array_shift($rez);
     }
     
     public function checkGoogleCaptcha($gRecaptchaResponse, $ip) 

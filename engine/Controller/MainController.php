@@ -35,9 +35,9 @@ class MainController extends Controller
                 if (!empty($checkUser['id'])) {
                     $param = ['question'=>$_POST['question'],'category_id'=>$_POST['category'],'user_id'=>$checkUser['id']];
                 } else {
-                    $user->addUser($param);
-                    $idUser = $user->getIdUser($param);
-                    $param = ['question'=>$_POST['question'],'category_id'=>$_POST['category'],'user_id'=>$idUser['id']];
+                    $idUser = $user->addUser($param);
+                    var_dump($idUser);
+                    $param = ['question'=>$_POST['question'],'category_id'=>$_POST['category'],'user_id'=>$idUser];
                 }
                 $sth->addQuestion($param);
                 $errors[] = 'Ваш вопрос записан!';

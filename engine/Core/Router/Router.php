@@ -30,11 +30,13 @@ class Router {
                 $controller->$action();
             } else {
                 //404
-                echo '404';
+                http_response_code(404);
+                exit('error 404');
             }
         } else {
             //404
-            echo '404';
+            http_response_code(404);
+            exit('error 404');
         }
     }
     

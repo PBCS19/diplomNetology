@@ -2,19 +2,19 @@
 
 namespace Engine\Model;
 
+use Engine\Core\ParentModel\Model;
 use Engine\Core\Database\Connection;
 
-class UserModel
+class UserModel extends Model
 { 
     /**
-     * Добавляет нового юзера
+     * Добавляет нового юзера и возвращает его id
      * @param array $param
+     * @return string
      */
     public function addUser($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-               "INSERT INTO users (name, email) VALUES (:name, :email)");
-        $sth->execute($param);
+        return $this->prepare("INSERT INTO users (name, email) VALUES (:name, :email)",$param);
     }
     
     /**
@@ -24,10 +24,8 @@ class UserModel
      */
     public function getIdUser($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-               "SELECT `id` FROM `users` WHERE name=:name AND email=:email");
-        $sth->execute($param);
-        return $sth->fetch();
+        $rez = $this->prepare("SELECT `id` FROM `users` WHERE name=:name AND email=:email",$param);
+        return array_shift($rez);
     }
     
     /**
@@ -37,10 +35,8 @@ class UserModel
      */
     public function checkUser($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-                "SELECT user_id FROM questions WHERE id= ?");
-        $sth->execute($param);
-        return $sth->fetch();
+        $rez = $this->prepare("SELECT user_id FROM questions WHERE id= ?",$param);
+        return array_shift($rez);
     }
     
     /**
@@ -49,8 +45,6 @@ class UserModel
      */
     public function actionChangeName($param)
     {
-        $sth = Connection::get()->connect()->prepare(
-                "UPDATE users SET name = ? WHERE id = ?");
-        $sth->execute($param);
+        $this->prepare("UPDATE users SET name = ? WHERE id = ?",$param);
     }
 }

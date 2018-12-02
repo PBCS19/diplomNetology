@@ -31,14 +31,14 @@ class AdminController
             $action = new AdminModel();
             $listAdmins = $this->listAdmin();
             if(isset($_POST['deladmin'])) {
-                $action->actionDelAdmin(['id'=>$_POST['deladmin']]);
+                $action->actionDelAdmin(['id' => $_POST['deladmin']]);
             }
             
             $questionModel = new QuestionsModel();
             $categories = $questionModel->getCategories();
             $questions = $questionModel->getQuestionCategories('all');
             $questionsNoAnswer = $questionModel->getQuestionCategories('onlyNoAnswer');
-            require_once __DIR__ . '/../View/admin.php';
+            require_once DIR_VIEW . 'admin.php';
         }    
     }
     
@@ -51,7 +51,7 @@ class AdminController
             $action = new QuestionsModel();
             $questions = $action->getQuestionCategories([$_POST['goEdit']]);
             $categories = $action->getCategories();
-            require_once __DIR__ . '/../View/edit.php';
+            require_once DIR_VIEW . 'edit.php';
         } elseif(isset($_POST['updateQuestion'])) {
             $this->updateQuestion();
             Response::redirect('/admin');
@@ -88,15 +88,15 @@ class AdminController
         } else {
             $errors[] = 'Введите логин или пароль!';
         }
-        if (!empty($errors)) {
-            return $errors;
-        } else {
+        
+        if (empty($errors)) {
             $_SESSION['admin_id'] = $login['id'];
-        }
+        } 
+        return $errors;
     }
     
     /**
-     * Проверка количества не верно введенных логинов и пароле, либо авторизация
+     * Проверка количества не верно введенных логинов и паролей, либо авторизация
      * @param array $errors
      */
     private function checkErrorsAuth($errors) 
@@ -106,13 +106,13 @@ class AdminController
             if (!isset($_SESSION['countCaptcha']) || $_SESSION['countCaptcha'] < 6) {
                 $count = isset($_SESSION['countCaptcha']) ? $_SESSION['countCaptcha'] : 0;
                 $auth->countCaptcha($count);
-                require_once __DIR__ . '/../View/login.php';
+                require_once DIR_VIEW . 'login.php';
             } elseif($_SESSION['countCaptcha'] >= 6 && $_SESSION['countCaptcha'] < 12) {
                 $auth->countCaptcha($_SESSION['countCaptcha']);
                 if (isset($_POST['g-recaptcha-response'])) {
                     $auth->checkGoogleCaptcha($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
                 }
-                require_once __DIR__ . '/../View/loginCaptcha.php';
+                require_once DIR_VIEW . 'loginCaptcha.php';
             } else {
                 setcookie('ban','бан на 1 час', time()+3600);
                 http_response_code(403);
@@ -144,11 +144,11 @@ class AdminController
             $errors = $action->checkErrorsAddAdmin($_POST);
             
             if (empty($errors)) {
-                $action->actionAddAdmin(['login'=>$_POST['login'],'password'=>$_POST['password']]);
+                $action->actionAddAdmin(['login' => $_POST['login'], 'password' => $_POST['password']]);
                 Response::redirect('/admin');
             }
         }
-        require_once __DIR__ . '/../View/addAdmin.php';
+        require_once DIR_VIEW . 'addAdmin.php';
     }
     
     /**
@@ -157,7 +157,7 @@ class AdminController
     public function changePassword()
     {
         $action = new AdminModel();
-        $action->actionChangePassword(['id'=>$_POST['goEditPas'], 'pas'=>$_POST['editPas']]);
+        $action->actionChangePassword(['id' => $_POST['goEditPas'], 'pas' => $_POST['editPas']]);
         Response::redirect('/admin');
     }
     
@@ -167,7 +167,7 @@ class AdminController
     public function delAdmin()
     {
         $action = new AdminModel();
-        $action->actionDelAdmin(['id'=>$_POST['deladmin']]);
+        $action->actionDelAdmin(['id' => $_POST['deladmin']]);
         Response::redirect('/admin');
     }
     
@@ -187,10 +187,10 @@ class AdminController
     {
         $action = new QuestionsModel();
         if(isset($_POST['questionHide'])) {
-            $action->actionStatusQuestion([1,$_POST['questionHide']]);
+            $action->actionStatusQuestion([1, $_POST['questionHide']]);
         }
         if(isset($_POST['questionOpen'])) {
-            $action->actionStatusQuestion([0,$_POST['questionOpen']]);
+            $action->actionStatusQuestion([0, $_POST['questionOpen']]);
         }
         Response::redirect('/admin');
     }
@@ -235,24 +235,17 @@ class AdminController
         $action = new QuestionsModel();
         if (!empty($_POST['changeName'])) {
             $user = new UserModel();
-            $userId = $user->checkUser([$_POST['updateQuestion']]);
-            $user->actionChangeName([$_POST['changeName'],$userId['user_id']]);
+            $userId = $user->checkUser([$_POST['updateQuestion']]); //Получение id юзера по id вопроса
+            $user->actionChangeName([$_POST['changeName'], $userId['user_id']]); //Изменение имени
         }
         if (!empty($_POST['changeQuestion'])) {
-            $action->actionChangeQuestion([$_POST['changeQuestion'],$_POST['updateQuestion']]);
+            $action->actionChangeQuestion([$_POST['changeQuestion'], $_POST['updateQuestion']]);
         }
         if (!empty($_POST['changeAnswer'])) {
-            $answerId = $action->checkAnswer([$_POST['updateQuestion']]);
-            if ($answerId['answer_id'] == null) {
-                $answerId = $action->addAnswer(['answer'=>$_POST['changeAnswer'],'admin_id'=>$_SESSION['admin_id']]);
-                $action->updateAnswerId([$answerId,$_POST['updateQuestion']]);
-            } else {
-                $action->actionChangeAnswer(['answer'=>$_POST['changeAnswer'],'admin_id'=>$_SESSION['admin_id'],'id'=>$answerId['answer_id']]);
-            }
-            $action->actionStatusQuestion([$_POST['status'],$_POST['updateQuestion']]);
+            $action->changeAnswer();
         }
         if (!empty($_POST['updateCategory'])) {
-            $action->actionUpdateCategory([$_POST['updateCategory'],$_POST['updateQuestion']]);
+            $action->actionUpdateCategory([$_POST['updateCategory'], $_POST['updateQuestion']]);
         }
     }
 }

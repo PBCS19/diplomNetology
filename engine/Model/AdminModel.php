@@ -13,8 +13,7 @@ class AdminModel extends Model
      */
     public function checkLoginPass($param) 
     {
-        $rez = $this->prepare("SELECT id FROM admins WHERE login= ? AND password= ?",$param);
-        return array_shift($rez);
+        return $this->prepareFetch("SELECT id FROM admins WHERE login= ? AND password= ?", $param);
     }
     
     /**
@@ -35,7 +34,7 @@ class AdminModel extends Model
      */
     public function getListAdmin() 
     {
-        return $this->prepare("SELECT id, login, password FROM admins",[]);
+        return $this->prepareFetchAll("SELECT id, login, password FROM admins",[]);
     }
 
     /**
@@ -44,7 +43,7 @@ class AdminModel extends Model
      */
     public function actionAddAdmin($param)
     {
-        $this->prepare("INSERT INTO admins (login, password) VALUES (:login, :password)",$param);
+        $this->lastInsertId("INSERT INTO admins (login, password) VALUES (:login, :password)",$param);
     }
     
     /**
@@ -95,8 +94,7 @@ class AdminModel extends Model
      */
     private function checkAdmin($param) 
     {
-        $rez = $this->prepare("SELECT id FROM admins WHERE login= ?",$param);
-        return array_shift($rez);
+        return $this->prepareFetch("SELECT id FROM admins WHERE login= ?",$param);
     }
     
     public function checkGoogleCaptcha($gRecaptchaResponse, $ip) 

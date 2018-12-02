@@ -20,7 +20,7 @@ class Connection
     
     public function connect()
     {
-        $config = require __DIR__ . '/../../Config/Database.php';
+        $config = require DATABASE_CONFIG;
         
         try {
             $db = new PDO(

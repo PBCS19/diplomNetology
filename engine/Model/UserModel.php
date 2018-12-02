@@ -14,7 +14,7 @@ class UserModel extends Model
      */
     public function addUser($param)
     {
-        return $this->prepare("INSERT INTO users (name, email) VALUES (:name, :email)",$param);
+        return $this->lastInsertId("INSERT INTO users (name, email) VALUES (:name, :email)", $param);
     }
     
     /**
@@ -24,19 +24,17 @@ class UserModel extends Model
      */
     public function getIdUser($param)
     {
-        $rez = $this->prepare("SELECT `id` FROM `users` WHERE name=:name AND email=:email",$param);
-        return array_shift($rez);
+        return $this->prepareFetch("SELECT `id` FROM `users` WHERE name=:name AND email=:email", $param);
     }
     
     /**
-     * Проверяет юзера на существование, возвращает его id
+     * Возвращает id юзера из таблицы с вопросами
      * @param array $param
      * @return array
      */
     public function checkUser($param)
     {
-        $rez = $this->prepare("SELECT user_id FROM questions WHERE id= ?",$param);
-        return array_shift($rez);
+        return $this->prepareFetch("SELECT user_id FROM questions WHERE id= ?",$param);
     }
     
     /**

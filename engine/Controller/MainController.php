@@ -16,7 +16,7 @@ class MainController extends Controller
         $sth = new QuestionsModel();
         $categories = $sth->getCategories();
         $questions = $sth->getQuestionCategories('status');
-        require_once __DIR__ . '/../View/index.php';
+        require_once DIR_VIEW . 'index.php';
     }
     
     /**
@@ -32,19 +32,18 @@ class MainController extends Controller
             
             if (empty($errors)) {
                 $user = new UserModel();
-                $param = ['name'=>$_POST['name'], 'email'=>$_POST['email']];
+                $param = ['name' => $_POST['name'], 'email' => $_POST['email']];
                 $checkUser = $user->getIdUser($param);
                 if (!empty($checkUser['id'])) {
-                    $param = ['question'=>$_POST['question'],'category_id'=>$_POST['category'],'user_id'=>$checkUser['id']];
+                    $param = ['question' => $_POST['question'],'category_id' => $_POST['category'],'user_id' => $checkUser['id']];
                 } else {
                     $idUser = $user->addUser($param);
-                    var_dump($idUser);
-                    $param = ['question'=>$_POST['question'],'category_id'=>$_POST['category'],'user_id'=>$idUser];
+                    $param = ['question' => $_POST['question'],'category_id' => $_POST['category'],'user_id' => $idUser];
                 }
                 $sth->addQuestion($param);
                 $errors[] = 'Ваш вопрос записан!';
             }
         }
-        require_once __DIR__ . '/../View/addQuestion.php';
+        require_once DIR_VIEW . 'addQuestion.php';
     }
 }

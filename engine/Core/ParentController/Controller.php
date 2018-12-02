@@ -2,6 +2,7 @@
 
 namespace Engine\Core\ParentController;
 
-class Controller {
-
+class Controller 
+{
+    
 }

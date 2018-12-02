@@ -13,7 +13,7 @@ class QuestionsModel extends Model
      */
     public function getCategories()
     {
-        return $this->prepare("SELECT `id`,`category` FROM `categories`",[]);
+        return $this->prepareFetchAll("SELECT `id`,`category` FROM `categories`", []);
     }
     
     /**
@@ -36,12 +36,12 @@ class QuestionsModel extends Model
             $param = 'WHERE q.id = ?';
         }
         
-        return $this->prepare("SELECT q.id,question,status,category_id,category,answer_id,q.date,name,email,answer,user_id "
+        return $this->prepareFetchAll("SELECT q.id,question,status,category_id,category,answer_id,q.date,name,email,answer,user_id "
                     . "FROM questions q "
                     . "INNER JOIN categories c ON c.id=q.category_id "
                     . "LEFT JOIN users u ON u.id=q.user_id "
                     . "LEFT JOIN answers a ON a.id=q.answer_id "
-                    . $param,$status);
+                    . $param, $status);
     }
     
     /**
@@ -50,7 +50,7 @@ class QuestionsModel extends Model
      */
     public function addQuestion($param)
     {
-        $this->prepare("INSERT INTO questions (question, category_id, user_id) VALUES (:question, :category_id, :user_id)",$param);
+        $this->prepare("INSERT INTO questions (question, category_id, user_id) VALUES (:question, :category_id, :user_id)", $param);
     }
     
     /**
@@ -59,7 +59,7 @@ class QuestionsModel extends Model
      */
     public function actionStatusQuestion($param)
     {
-        $this->prepare("UPDATE questions SET status = ? WHERE id = ?",$param);
+        $this->prepare("UPDATE questions SET status = ? WHERE id = ?", $param);
     }
     
     /**
@@ -68,8 +68,8 @@ class QuestionsModel extends Model
      */
     public function actionDelCategory($param)
     {
-        $this->prepare("DELETE FROM questions WHERE category_id=?",$param);
-        $this->prepare("DELETE FROM categories WHERE id=? LIMIT 1",$param);
+        $this->prepare("DELETE FROM questions WHERE category_id=?", $param);
+        $this->prepare("DELETE FROM categories WHERE id=? LIMIT 1", $param);
     }
     
     /**
@@ -78,7 +78,7 @@ class QuestionsModel extends Model
      */
     public function actionAddCategory($param)
     {
-        $this->prepare("INSERT INTO categories (category) VALUES ( ? )",$param);
+        $this->prepare("INSERT INTO categories (category) VALUES ( ? )", $param);
     }
     
     /**
@@ -87,7 +87,7 @@ class QuestionsModel extends Model
      */
     public function actionDelQuestion($param)
     {
-        $this->prepare("DELETE FROM questions WHERE id=?",$param);
+        $this->prepare("DELETE FROM questions WHERE id=?", $param);
     }
     
     /**
@@ -96,27 +96,41 @@ class QuestionsModel extends Model
      */
     public function actionChangeQuestion($param)
     {
-        $this->prepare("UPDATE questions SET question = ? WHERE id = ?",$param);
+        $this->prepare("UPDATE questions SET question = ? WHERE id = ?", $param);
     }
     
     /**
+     * Добавление нового ответа или изменение, если он существует
+     */
+    public function changeAnswer()
+    {
+        $answerId = $this->checkAnswer([$_POST['updateQuestion']]);
+        if ($answerId['answer_id'] == null) {
+            $answerId = $this->addAnswer(['answer' => $_POST['changeAnswer'], 'admin_id' => $_SESSION['admin_id']]);
+            $this->updateAnswerId([$answerId,$_POST['updateQuestion']]);
+        } else {
+            $this->actionChangeAnswer(['answer' => $_POST['changeAnswer'], 'admin_id' => $_SESSION['admin_id'], 'id' => $answerId['answer_id']]);
+        }
+        $this->actionStatusQuestion([$_POST['status'], $_POST['updateQuestion']]);
+    }
+
+     /**
      * Проверяет существование ответа на вопрос, возвращает id ответа
      * @param array $param
      * @return array
      */
-    public function checkAnswer($param)
+    private function checkAnswer($param)
     {
-        $rez = $this->prepare("SELECT answer_id FROM questions WHERE id= ?",$param);
-        return array_shift($rez);
+        return $this->prepareFetch("SELECT answer_id FROM questions WHERE id= ?", $param);
     }
 
     /**
      * Изменение ответа
      * @param array $param
      */
-    public function actionChangeAnswer($param)
+    private function actionChangeAnswer($param)
     {
-        $this->prepare("UPDATE answers SET answer = :answer, admin_id = :admin_id WHERE id = :id",$param);
+        $this->prepare("UPDATE answers SET answer = :answer, admin_id = :admin_id WHERE id = :id", $param);
     }
     
     /**
@@ -124,18 +138,18 @@ class QuestionsModel extends Model
      * @param array $param
      * @return string
      */
-    public function addAnswer($param)
+    private function addAnswer($param)
     {
-        return $this->prepare("INSERT INTO answers (answer, admin_id) VALUES (:answer, :admin_id)",$param);
+        return $this->lastInsertId("INSERT INTO answers (answer, admin_id) VALUES (:answer, :admin_id)", $param);
     }
     
     /**
      * Обновляет id ответа в вопросе
      * @param array $param
      */
-    public function updateAnswerId($param)
+    private function updateAnswerId($param)
     {
-        $this->prepare("UPDATE questions SET answer_id = ? WHERE id = ?",$param);
+        $this->prepare("UPDATE questions SET answer_id = ? WHERE id = ?", $param);
     }
 
     /**
@@ -144,7 +158,7 @@ class QuestionsModel extends Model
      */
     public function actionUpdateCategory($param)
     {
-        $this->prepare("UPDATE questions SET category_id = ? WHERE id = ?",$param);
+        $this->prepare("UPDATE questions SET category_id = ? WHERE id = ?", $param);
     }
     
     /**

@@ -20,7 +20,6 @@ class Router {
         }
         
         $controllerName = ucfirst(strtolower($controller)) . 'Controller';
-        $actionName = $action;
         
         $controllerPath = '../engine/Controller/' . $controllerName . '.php';
         if (file_exists($controllerPath)) {

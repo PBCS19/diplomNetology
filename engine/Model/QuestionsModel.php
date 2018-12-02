@@ -2,7 +2,6 @@
 
 namespace Engine\Model;
 
-use Engine\Core\Database\Connection;
 use Engine\Core\ParentModel\Model;
 
 class QuestionsModel extends Model

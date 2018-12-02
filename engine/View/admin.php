@@ -112,6 +112,14 @@
     <details>
       <summary>Вопросы без ответа</summary>
       <table border="1">
+        <tr>
+          <td>Дата</td>
+          <td>Имя</td>
+          <td>E-mail</td>
+          <td>Вопрос</td>
+          <td>Удалить</td>
+          <td>Изменить/Ответить</td>
+        </tr>
         <?php foreach ($questionsNoAnswer as $questionNoAnswer) : ?>
             <tr>
               <td>

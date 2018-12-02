@@ -3,7 +3,6 @@
 namespace Engine\Model;
 
 use Engine\Core\ParentModel\Model;
-use Engine\Core\Database\Connection;
 
 class UserModel extends Model
 { 

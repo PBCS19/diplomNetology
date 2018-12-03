@@ -4,7 +4,7 @@
     
   </head>
   <body>
-    <?php foreach ($questions as $question) : ?>
+    <?php foreach ($array['questions'] as $question) : ?>
     <form method="POST" action="edit">
       <p>
         <a>Имя:</a><br>
@@ -21,7 +21,7 @@
       <p>
         <lable id="updateCategory">Категория:</lable><br>
         <select name="updateCategory">
-        <?php foreach ($categories as $category) :?>
+        <?php foreach ($array['categories'] as $category) :?>
           <option <?php if ($category['id'] == $question['category_id']):?>
           selected<?php endif; ?> value="<?php echo $category['id']?>"><?php echo $category['category']?></option>
         <?php endforeach; ?>

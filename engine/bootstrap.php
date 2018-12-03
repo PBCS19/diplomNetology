@@ -5,12 +5,16 @@ require_once __DIR__ . '/constant.php';
 
 use Engine\Core\Router\Router;
 
+function displayError()
+{
+    ini_set('error_reporting', E_ALL);
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+}
+
 try {
     
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-    
+    displayError();
     $cms = new Router();
     $cms->run();
     

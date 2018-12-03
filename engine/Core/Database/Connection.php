@@ -4,8 +4,9 @@ namespace Engine\Core\Database;
 
 use \PDO;
 
-//Устанавливате соединение и выполняет запросы
-
+/**
+ * Устанавливате соединение и выполняет запросы
+ */
 class Connection 
 {   
     static $di = null;
@@ -33,23 +34,5 @@ class Connection
         }
         return $db;
     }
-    
-//    public function execute($sql)
-//    {
-//        $sth = $this->connect()->prepare($sql);
-//        return $sth->execute();
-//    }
-//    
-//    public function query($sql) {
-//        $sth = $this->connect()->prepare($sql);
-//        $sth->execute();
-//        $result = $sth->fetchAll(PDO::FETCH_ASSOC);
-//        
-//        if (!$result) {
-//            return [];
-//        }
-//        
-//        return $result;
-//    }
 
 }

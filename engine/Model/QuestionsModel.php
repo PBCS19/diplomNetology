@@ -35,12 +35,13 @@ class QuestionsModel extends Model
             $param = 'WHERE q.id = ?';
         }
         
-        return $this->prepareFetchAll("SELECT q.id,question,status,category_id,category,answer_id,q.date,name,email,answer,user_id "
-                    . "FROM questions q "
-                    . "INNER JOIN categories c ON c.id=q.category_id "
-                    . "LEFT JOIN users u ON u.id=q.user_id "
-                    . "LEFT JOIN answers a ON a.id=q.answer_id "
-                    . $param, $status);
+        return $this->prepareFetchAll(
+                "SELECT q.id, question, status, category_id, category, answer_id, answer, q.date, name, email, user_id "
+                . "FROM questions q "
+                . "INNER JOIN categories c ON c.id=q.category_id "
+                . "LEFT JOIN users u ON u.id=q.user_id "
+                . "LEFT JOIN answers a ON a.id=q.answer_id "
+                . $param, $status);
     }
     
     /**
@@ -49,7 +50,10 @@ class QuestionsModel extends Model
      */
     public function addQuestion($param)
     {
-        $this->prepare("INSERT INTO questions (question, category_id, user_id) VALUES (:question, :category_id, :user_id)", $param);
+        $this->prepare(
+                "INSERT INTO questions (question, category_id, user_id) "
+                . "VALUES (:question, :category_id, :user_id)",
+                $param);
     }
     
     /**
@@ -104,13 +108,28 @@ class QuestionsModel extends Model
     public function changeAnswer()
     {
         $answerId = $this->checkAnswer([$_POST['updateQuestion']]);
+        
         if ($answerId['answer_id'] == null) {
-            $answerId = $this->addAnswer(['answer' => $_POST['changeAnswer'], 'admin_id' => $_SESSION['admin_id']]);
+            $answerId = $this->addAnswer(
+                    [
+                        'answer' => $_POST['changeAnswer'],
+                        'admin_id' => $_SESSION['admin_id']
+                    ]);
             $this->updateAnswerId([$answerId,$_POST['updateQuestion']]);
         } else {
-            $this->actionChangeAnswer(['answer' => $_POST['changeAnswer'], 'admin_id' => $_SESSION['admin_id'], 'id' => $answerId['answer_id']]);
+            $this->actionChangeAnswer(
+                    [
+                        'answer' => $_POST['changeAnswer'],
+                        'admin_id' => $_SESSION['admin_id'],
+                        'id' => $answerId['answer_id']
+                    ]);
         }
-        $this->actionStatusQuestion([$_POST['status'], $_POST['updateQuestion']]);
+        
+        $this->actionStatusQuestion(
+                [
+                    $_POST['status'],
+                    $_POST['updateQuestion']
+                ]);
     }
 
      /**
@@ -129,7 +148,9 @@ class QuestionsModel extends Model
      */
     private function actionChangeAnswer($param)
     {
-        $this->prepare("UPDATE answers SET answer = :answer, admin_id = :admin_id WHERE id = :id", $param);
+        $this->prepare(
+                "UPDATE answers SET answer = :answer, admin_id = :admin_id WHERE id = :id",
+                $param);
     }
     
     /**
@@ -139,7 +160,9 @@ class QuestionsModel extends Model
      */
     private function addAnswer($param)
     {
-        return $this->lastInsertId("INSERT INTO answers (answer, admin_id) VALUES (:answer, :admin_id)", $param);
+        return $this->lastInsertId(
+                "INSERT INTO answers (answer, admin_id) VALUES (:answer, :admin_id)",
+                $param);
     }
     
     /**

@@ -6,11 +6,12 @@ use Engine\Model\AdminModel;
 use Engine\Model\QuestionsModel;
 use Engine\Model\UserModel;
 use Engine\Core\Response\Response;
+use Engine\Core\ParentController\Controller;
 
-class AdminController
+class AdminController extends Controller
 {
     /**
-     * Авторизция
+     * Авторизация
      */
     public function auth() 
     {
@@ -33,13 +34,19 @@ class AdminController
             if(isset($_POST['deladmin'])) {
                 $action->actionDelAdmin(['id' => $_POST['deladmin']]);
             }
-            
             $questionModel = new QuestionsModel();
             $categories = $questionModel->getCategories();
             $questions = $questionModel->getQuestionCategories('all');
             $questionsNoAnswer = $questionModel->getQuestionCategories('onlyNoAnswer');
-            require_once DIR_VIEW . 'admin.php';
-        }    
+            
+            $array = [
+                'listAdmins'        => $listAdmins,
+                'categories'        => $categories,
+                'questions'         => $questions,
+                'questionsNoAnswer' => $questionsNoAnswer,
+            ];
+            $this->requireOnce('admin.php', $array);
+        } 
     }
     
     /**
@@ -51,13 +58,20 @@ class AdminController
             $action = new QuestionsModel();
             $questions = $action->getQuestionCategories([$_POST['goEdit']]);
             $categories = $action->getCategories();
-            require_once DIR_VIEW . 'edit.php';
+            
+            $array = [
+                'categories' => $categories,
+                'questions'  => $questions,
+            ];
+            $this->requireOnce('edit.php', $array);
+            
         } elseif(isset($_POST['updateQuestion'])) {
             $this->updateQuestion();
             Response::redirect('/admin');
         } else {
             Response::redirect('/admin');
         }
+        
     }
     
     /**
@@ -103,21 +117,27 @@ class AdminController
     {
         if (!empty($errors)) {
             $auth = new AdminModel();
-            if (!isset($_SESSION['countCaptcha']) || $_SESSION['countCaptcha'] < 6) {
+            if (!isset($_SESSION['countCaptcha']) || $_SESSION['countCaptcha'] < 6) {    //Без капчи
+                
                 $count = isset($_SESSION['countCaptcha']) ? $_SESSION['countCaptcha'] : 0;
                 $auth->countCaptcha($count);
-                require_once DIR_VIEW . 'login.php';
-            } elseif($_SESSION['countCaptcha'] >= 6 && $_SESSION['countCaptcha'] < 12) {
+                $this->requireOnce('login.php', ['errors' => $errors]);
+                
+            } elseif($_SESSION['countCaptcha'] >= 6 && $_SESSION['countCaptcha'] < 12) {  //С каптчей
+                
                 $auth->countCaptcha($_SESSION['countCaptcha']);
                 if (isset($_POST['g-recaptcha-response'])) {
                     $auth->checkGoogleCaptcha($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
                 }
-                require_once DIR_VIEW . 'loginCaptcha.php';
-            } else {
+                $this->requireOnce('loginCaptcha.php', ['errors' => $errors]);
+                
+            } else {                                                                     //Бан
+                
                 setcookie('ban','бан на 1 час', time()+3600);
                 http_response_code(403);
                 exit('Подождите часок, мы вас заблокировали, а затем попробуйте снова');
-            }    
+                
+            }
         } else {
             Response::redirect('/admin');
         }
@@ -138,17 +158,22 @@ class AdminController
      */
     public function addAdmin()
     {
+        $errors = [];
         if (isset($_POST['submit'])) {
             $action = new AdminModel();
             
             $errors = $action->checkErrorsAddAdmin($_POST);
             
             if (empty($errors)) {
-                $action->actionAddAdmin(['login' => $_POST['login'], 'password' => $_POST['password']]);
+                $action->actionAddAdmin(
+                            [
+                                'login' => $_POST['login'],
+                                'password' => $_POST['password']
+                            ]);
                 Response::redirect('/admin');
             }
         }
-        require_once DIR_VIEW . 'addAdmin.php';
+        $this->requireOnce('addAdmin.php', ['errors' => $errors]);
     }
     
     /**
@@ -157,7 +182,11 @@ class AdminController
     public function changePassword()
     {
         $action = new AdminModel();
-        $action->actionChangePassword(['id' => $_POST['goEditPas'], 'pas' => $_POST['editPas']]);
+        $action->actionChangePassword(
+                    [
+                        'id'  => $_POST['goEditPas'], 
+                        'pas' => $_POST['editPas']
+                    ]);
         Response::redirect('/admin');
     }
     
@@ -239,13 +268,13 @@ class AdminController
             $user->actionChangeName([$_POST['changeName'], $userId['user_id']]); //Изменение имени
         }
         if (!empty($_POST['changeQuestion'])) {
-            $action->actionChangeQuestion([$_POST['changeQuestion'], $_POST['updateQuestion']]);
+            $action->actionChangeQuestion([$_POST['changeQuestion'], $_POST['updateQuestion']]); //Изменение вопроса по id вопроса
         }
-        if (!empty($_POST['changeAnswer'])) {
+        if (!empty($_POST['changeAnswer'])) { //Изменение ответа по id вопроса
             $action->changeAnswer();
         }
         if (!empty($_POST['updateCategory'])) {
-            $action->actionUpdateCategory([$_POST['updateCategory'], $_POST['updateQuestion']]);
+            $action->actionUpdateCategory([$_POST['updateCategory'], $_POST['updateQuestion']]); //Изменение категории по id вопроса
         }
     }
 }

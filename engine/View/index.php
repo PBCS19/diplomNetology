@@ -40,7 +40,7 @@
 <div class="button"><a class="button" href="/main/add">Задать вопрос</a></div>
 <section class="cd-faq">
 	<ul class="cd-faq-categories">
-          <?php foreach ($categories as $key=>$category) : ?>
+          <?php foreach ($array['categories'] as $key=>$category) : ?>
             <?php if ($key == 0) :?>
 		<li><a class="selected" href="#<?php echo $category['id']?>"><?php echo $category['category']?></a></li>
             <?php else: ?>
@@ -50,10 +50,10 @@
 	</ul> <!-- cd-faq-categories -->
 
 	<div class="cd-faq-items">
-          <?php foreach ($categories as $category) : ?>
+          <?php foreach ($array['categories'] as $category) : ?>
 		<ul id="<?php echo $category['id']?>" class="cd-faq-group">
 			<li class="cd-faq-title"><h2><?php echo $category['category']?></h2></li>
-                        <?php foreach ($questions as $question) : ?>
+                        <?php foreach ($array['questions'] as $question) : ?>
                           <?php if($category['id'] == $question['category_id']) : ?>
 			    <li>
 				<a class="cd-faq-trigger" href="#0"><?php echo $question['question']?></a>

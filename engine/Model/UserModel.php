@@ -13,7 +13,9 @@ class UserModel extends Model
      */
     public function addUser($param)
     {
-        return $this->lastInsertId("INSERT INTO users (name, email) VALUES (:name, :email)", $param);
+        return $this->lastInsertId(
+                "INSERT INTO users (name, email) VALUES (:name, :email)",
+                $param);
     }
     
     /**
@@ -23,7 +25,9 @@ class UserModel extends Model
      */
     public function getIdUser($param)
     {
-        return $this->prepareFetch("SELECT `id` FROM `users` WHERE name=:name AND email=:email", $param);
+        return $this->prepareFetch(
+                "SELECT `id` FROM `users` WHERE name=:name AND email=:email",
+                $param);
     }
     
     /**
@@ -33,7 +37,7 @@ class UserModel extends Model
      */
     public function checkUser($param)
     {
-        return $this->prepareFetch("SELECT user_id FROM questions WHERE id= ?",$param);
+        return $this->prepareFetch("SELECT user_id FROM questions WHERE id= ?", $param);
     }
     
     /**
@@ -42,6 +46,6 @@ class UserModel extends Model
      */
     public function actionChangeName($param)
     {
-        $this->prepare("UPDATE users SET name = ? WHERE id = ?",$param);
+        $this->prepare("UPDATE users SET name = ? WHERE id = ?", $param);
     }
 }

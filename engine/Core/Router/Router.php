@@ -2,14 +2,22 @@
 
 namespace Engine\Core\Router;
 
+use Engine\Core\Response\Response;
+
 class Router {
     
     public function run()
     {
-        $controller = 'Main';
+        $controller = 'main';
         $action = 'index';
         
-        $routes = explode('/', $_SERVER['REQUEST_URI']);
+        $uri = strlen($_SERVER['REQUEST_URI']) > 1 ? 
+                rtrim($_SERVER['REQUEST_URI'], '/') : $_SERVER['REQUEST_URI'];
+        if ($uri !== $_SERVER['REQUEST_URI']) {
+            Response::redirect($uri);
+        }
+        
+        $routes = explode('/', $uri);
         
         if (!empty($routes[1])) {
             $controller = $routes[1];

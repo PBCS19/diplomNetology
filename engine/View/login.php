@@ -4,8 +4,8 @@
     <title>Авторизация</title>
   </head>
   <body>
-    <?php if (!empty($errors)) : ?>
-    <p style="color: red;"><?= array_shift($errors);?></p>
+    <?php if (!empty($array['errors'])) : ?>
+    <p style="color: red;"><?= array_shift($array['errors']);?></p>
     <?php endif ?>
     <form method="POST" action="auth">
       <p>

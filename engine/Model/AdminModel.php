@@ -34,7 +34,7 @@ class AdminModel extends Model
      */
     public function getListAdmin() 
     {
-        return $this->prepareFetchAll("SELECT id, login, password FROM admins",[]);
+        return $this->prepareFetchAll("SELECT id, login, password FROM admins", []);
     }
 
     /**
@@ -43,7 +43,9 @@ class AdminModel extends Model
      */
     public function actionAddAdmin($param)
     {
-        $this->lastInsertId("INSERT INTO admins (login, password) VALUES (:login, :password)",$param);
+        $this->lastInsertId(
+                "INSERT INTO admins (login, password) VALUES (:login, :password)",
+                $param);
     }
     
     /**
@@ -52,7 +54,7 @@ class AdminModel extends Model
      */
     public function actionChangePassword($param)
     {
-        $this->prepare("UPDATE admins SET password=:pas WHERE id=:id",$param);
+        $this->prepare("UPDATE admins SET password=:pas WHERE id=:id", $param);
     }
     
     /**
@@ -61,7 +63,7 @@ class AdminModel extends Model
      */
     public function actionDelAdmin($param)
     {
-        $this->prepare("DELETE FROM admins WHERE id=:id LIMIT 1",$param);
+        $this->prepare("DELETE FROM admins WHERE id=:id LIMIT 1", $param);
     }
     
     /**
@@ -94,14 +96,17 @@ class AdminModel extends Model
      */
     private function checkAdmin($param) 
     {
-        return $this->prepareFetch("SELECT id FROM admins WHERE login= ?",$param);
+        return $this->prepareFetch("SELECT id FROM admins WHERE login= ?", $param);
     }
     
     public function checkGoogleCaptcha($gRecaptchaResponse, $ip) 
     {
         $urlToGoogleApi = "https://www.google.com/recaptcha/api/siteverify";
         $secretKey = '6LfASncUAAAAAG9zh38syXzQcqO353hMGUq2ZboX';
-        $query = $urlToGoogleApi . '?secret=' . $secretKey . '&response=' . $gRecaptchaResponse . '&remoteip=' . $ip;
+        $query = $urlToGoogleApi
+                . '?secret=' . $secretKey
+                . '&response=' . $gRecaptchaResponse
+                . '&remoteip=' . $ip;
         $data = json_decode(file_get_contents($query));
         if ($data->success) {
             // Продолжаем работать с данными для авторизации из POST массива

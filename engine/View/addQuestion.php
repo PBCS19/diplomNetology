@@ -4,8 +4,8 @@
     
   </head>
   <body>
-    <?php if (!empty($errors)) : ?>
-    <p style="color: red;"><?= array_shift($errors);?></p>
+    <?php if (!empty($array['errors'])) : ?>
+    <p style="color: red;"><?= array_shift($array['errors']);?></p>
     <?php endif ?>
     <form method="POST" action="add">
       <p>
@@ -23,7 +23,7 @@
       <p>
         <lable id="category">Категория:</lable><br>
         <select name="category">
-        <?php foreach ($categories as $category) :?>
+        <?php foreach ($array['categories'] as $category) :?>
           <option value="<?php echo $category['id']?>"><?php echo $category['category']?></option>
         <?php endforeach; ?>
         </select>

@@ -4,6 +4,8 @@
     
   </head>
   <body>
+    <h4>Количество отвеченных вопросов: <?php echo count($array['questions']) - count($array['questionsNoAnswer']); ?></h4>
+    <h4>Количество НЕ отвеченных вопросов: <?php echo count($array['questionsNoAnswer']); ?></h4>
     <details>
       <summary>Администраторы</summary><br>
       <div class="button"><a href="/admin/addAdmin">Добавить администратора</a></div><br>
@@ -13,7 +15,7 @@
           <td>Пароль</td>
           <td>Изменить пароль</td>
         </tr>
-        <?php foreach ($listAdmins as $admin) : ?>
+        <?php foreach ($array['listAdmins'] as $admin) : ?>
         <tr>
           <td><?php echo $admin['login'] ?></td>
           <td><?php echo $admin['password'] ?></td>
@@ -38,7 +40,7 @@
         <input type="text" name="addCategory" placeholder="Введите название категории"/>
         <button name="goAddCategory" type="submit" value="">Создать новую категорию</button> * Пустая категория не добавится!
       </form>
-      <?php foreach ($categories as $category) : ?>
+      <?php foreach ($array['categories'] as $category) : ?>
       <h2><?php echo $category['category']?>
             <form method="POST" action="admin/delCategory">
               <button name="delCategory" type="submit" value="<?php echo $category['id']; ?>">Удалить категорию и все вопросы в ней</button>
@@ -54,7 +56,7 @@
                     <td><b>Удалить</b></td>
                     <td><b>Изменить</b></td>
                   </tr>
-                        <?php foreach ($questions as $question) : ?>
+                        <?php foreach ($array['questions'] as $question) : ?>
                           <?php if($category['id'] == $question['category_id']) : ?>
                           <tr>
                             <td>
@@ -120,7 +122,7 @@
           <td>Удалить</td>
           <td>Изменить/Ответить</td>
         </tr>
-        <?php foreach ($questionsNoAnswer as $questionNoAnswer) : ?>
+        <?php foreach ($array['questionsNoAnswer'] as $questionNoAnswer) : ?>
             <tr>
               <td>
                 <a><?php echo $questionNoAnswer['date'] ?></a>

@@ -74,15 +74,15 @@ class AdminModel extends Model
     public function checkErrorsAddAdmin($param)
     {
         $errors = [];
-        if (empty($param['login'])) {
+        if ( empty($param['login']) ) {
             $errors[] = 'Введите логин';
         }
         
-        elseif (empty($param['password'])) {
+        elseif ( empty($param['password']) ) {
             $errors[] = 'Введите пароль';
         }
         
-        elseif (!empty($id = $this->checkAdmin([$param['login']]))) {
+        elseif ( !empty($id = $this->checkAdmin([$param['login']])) ) {
             $errors[] = 'Такой администратор существует!';
         }
         

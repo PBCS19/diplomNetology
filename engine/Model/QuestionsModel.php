@@ -22,13 +22,13 @@ class QuestionsModel extends Model
      */
     public function getQuestionCategories($status)
     {
-        if ($status === 'all') {
+        if ( $status === 'all' ) {
             $param = 'ORDER BY q.date DESC';
             $status = [];
-        } elseif ($status === 'status') {
+        } elseif ( $status === 'status' ) {
             $param = 'WHERE q.answer_id IS NOT NULL AND q.status = 0';
             $status = [];
-        } elseif ($status === 'onlyNoAnswer') {
+        } elseif ( $status === 'onlyNoAnswer' ) {
            $param = 'WHERE q.answer_id IS NULL ORDER BY q.date DESC';
            $status = [];
         } else {
@@ -109,7 +109,7 @@ class QuestionsModel extends Model
     {
         $answerId = $this->checkAnswer([$_POST['updateQuestion']]);
         
-        if ($answerId['answer_id'] == null) {
+        if ( $answerId['answer_id'] == null ) {
             $answerId = $this->addAnswer(
                     [
                         'answer' => $_POST['changeAnswer'],
@@ -191,15 +191,15 @@ class QuestionsModel extends Model
     public function checkErrorsQuestions($param)
     {
         $errors = [];
-        if (empty($param['name'])) {
+        if ( empty($param['name']) ) {
             $errors[] = 'Введите ваше имя';
         }
         
-        if (empty($param['email'])) {
+        if ( empty($param['email']) ) {
             $errors[] = 'Введите ваш e-mail';
         }
         
-        if (empty($param['question'])) {
+        if ( empty($param['question']) ) {
             $errors[] = 'Введите вопрос';
         }
         

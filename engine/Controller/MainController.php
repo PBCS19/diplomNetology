@@ -32,18 +32,18 @@ class MainController extends Controller
         $sth = new QuestionsModel();
         $categories = $sth->getCategories();
         $errors = [];
-        if (isset($_POST['submit'])) {
+        if ( isset($_POST['submit']) ) {
             
             $errors = $sth->checkErrorsQuestions($_POST);
             
-            if (empty($errors)) {
+            if ( empty($errors) ) {
                 $user = new UserModel();
                 $param = [
                     'name'  => $_POST['name'],
                     'email' => $_POST['email']
                 ];
                 $checkUser = $user->getIdUser($param);
-                if (!empty($checkUser['id'])) {
+                if ( !empty($checkUser['id']) ) {
                     $param = [
                         'question'    => $_POST['question'],
                         'category_id' => $_POST['category'],

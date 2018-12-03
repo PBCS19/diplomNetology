@@ -26,12 +26,12 @@ class AdminController extends Controller
      */
     public function index()
     {
-        if (!isset($_SESSION['admin_id'])) {
+        if ( !isset($_SESSION['admin_id']) ) {
             Response::redirect('/admin/auth');
         } else {
             $action = new AdminModel();
             $listAdmins = $this->listAdmin();
-            if(isset($_POST['deladmin'])) {
+            if( isset($_POST['deladmin']) ) {
                 $action->actionDelAdmin(['id' => $_POST['deladmin']]);
             }
             $questionModel = new QuestionsModel();
@@ -54,7 +54,7 @@ class AdminController extends Controller
      */
     public function edit()
     {   
-        if (isset($_POST['goEdit'])) {
+        if ( isset($_POST['goEdit']) ) {
             $action = new QuestionsModel();
             $questions = $action->getQuestionCategories([$_POST['goEdit']]);
             $categories = $action->getCategories();
@@ -65,7 +65,7 @@ class AdminController extends Controller
             ];
             $this->requireOnce('edit.php', $array);
             
-        } elseif(isset($_POST['updateQuestion'])) {
+        } elseif( isset($_POST['updateQuestion']) ) {
             $this->updateQuestion();
             Response::redirect('/admin');
         } else {
@@ -93,17 +93,17 @@ class AdminController extends Controller
     private function loginPass($login, $password) 
     {
         $errors = [];
-        if (!empty($login) && !empty($password)) {
+        if ( !empty($login) && !empty($password) ) {
             $auth = new AdminModel();
             $login = $auth->checkLoginPass([$login, $password]);
-            if (!$login['id']) {
+            if ( !$login['id'] ) {
                 $errors[] = 'Не верный логин или пароль!';
             }
         } else {
             $errors[] = 'Введите логин или пароль!';
         }
         
-        if (empty($errors)) {
+        if ( empty($errors) ) {
             $_SESSION['admin_id'] = $login['id'];
         } 
         return $errors;
@@ -115,18 +115,18 @@ class AdminController extends Controller
      */
     private function checkErrorsAuth($errors) 
     {
-        if (!empty($errors)) {
+        if ( !empty($errors) ) {
             $auth = new AdminModel();
-            if (!isset($_SESSION['countCaptcha']) || $_SESSION['countCaptcha'] < 6) {    //Без капчи
+            if ( !isset($_SESSION['countCaptcha']) || $_SESSION['countCaptcha'] < 6 ) {    //Без капчи
                 
                 $count = isset($_SESSION['countCaptcha']) ? $_SESSION['countCaptcha'] : 0;
                 $auth->countCaptcha($count);
                 $this->requireOnce('login.php', ['errors' => $errors]);
                 
-            } elseif($_SESSION['countCaptcha'] >= 6 && $_SESSION['countCaptcha'] < 12) {  //С каптчей
+            } elseif( $_SESSION['countCaptcha'] >= 6 && $_SESSION['countCaptcha'] < 12 ) {  //С каптчей
                 
                 $auth->countCaptcha($_SESSION['countCaptcha']);
-                if (isset($_POST['g-recaptcha-response'])) {
+                if ( isset($_POST['g-recaptcha-response']) ) {
                     $auth->checkGoogleCaptcha($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
                 }
                 $this->requireOnce('loginCaptcha.php', ['errors' => $errors]);
@@ -159,12 +159,12 @@ class AdminController extends Controller
     public function addAdmin()
     {
         $errors = [];
-        if (isset($_POST['submit'])) {
+        if ( isset($_POST['submit']) ) {
             $action = new AdminModel();
             
             $errors = $action->checkErrorsAddAdmin($_POST);
             
-            if (empty($errors)) {
+            if ( empty($errors) ) {
                 $action->actionAddAdmin(
                             [
                                 'login' => $_POST['login'],
@@ -215,10 +215,10 @@ class AdminController extends Controller
     public function statusQuestion()
     {
         $action = new QuestionsModel();
-        if(isset($_POST['questionHide'])) {
+        if( isset($_POST['questionHide']) ) {
             $action->actionStatusQuestion([1, $_POST['questionHide']]);
         }
-        if(isset($_POST['questionOpen'])) {
+        if( isset($_POST['questionOpen']) ) {
             $action->actionStatusQuestion([0, $_POST['questionOpen']]);
         }
         Response::redirect('/admin');
@@ -240,7 +240,7 @@ class AdminController extends Controller
     public function addCategory()
     {
         $action = new QuestionsModel();
-        if (!empty($_POST['addCategory'])) {
+        if ( !empty($_POST['addCategory']) ) {
             $action->actionAddCategory([$_POST['addCategory']]);
         }
         Response::redirect('/admin');
@@ -262,18 +262,18 @@ class AdminController extends Controller
     private function updateQuestion()
     {
         $action = new QuestionsModel();
-        if (!empty($_POST['changeName'])) {
+        if ( !empty($_POST['changeName']) ) {
             $user = new UserModel();
             $userId = $user->checkUser([$_POST['updateQuestion']]); //Получение id юзера по id вопроса
             $user->actionChangeName([$_POST['changeName'], $userId['user_id']]); //Изменение имени
         }
-        if (!empty($_POST['changeQuestion'])) {
+        if ( !empty($_POST['changeQuestion']) ) {
             $action->actionChangeQuestion([$_POST['changeQuestion'], $_POST['updateQuestion']]); //Изменение вопроса по id вопроса
         }
-        if (!empty($_POST['changeAnswer'])) { //Изменение ответа по id вопроса
+        if ( !empty($_POST['changeAnswer']) ) { //Изменение ответа по id вопроса
             $action->changeAnswer();
         }
-        if (!empty($_POST['updateCategory'])) {
+        if ( !empty($_POST['updateCategory']) ) {
             $action->actionUpdateCategory([$_POST['updateCategory'], $_POST['updateQuestion']]); //Изменение категории по id вопроса
         }
     }
